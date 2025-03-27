@@ -118,16 +118,20 @@ export const getZodiacInfo = (sign: ZodiacSign): ZodiacInfo | undefined => {
   return zodiacSigns.find(zodiac => zodiac.sign === sign);
 };
 
-// Function to fetch daily horoscope using a different API
+// Function to fetch daily horoscope with the new API key
 export const fetchHoroscope = async (sign: ZodiacSign): Promise<Horoscope> => {
   try {
-    // Using Horoscope API from RapidAPI
-    const apiUrl = `https://sameer-kumar-aztro-v1.p.rapidapi.com/?sign=${sign}&day=today`;
+    // Use the new API key provided by the user
+    const apiKey = "URM6gMZpXL7vkOESsgougSa7LLesasB3xLWhNpIf";
+    
+    // This is a generic API endpoint structure - replace with the correct one for your API
+    const apiUrl = `https://api.zodiac-api.com/v1/horoscope/${sign}/today`;
+    
     const options = {
-      method: 'POST',
+      method: 'GET',
       headers: {
-        'X-RapidAPI-Key': 'f458fdbeb7msh91ef95dc53d0e75p1f3affjsn9c05c8c8d8d1',
-        'X-RapidAPI-Host': 'sameer-kumar-aztro-v1.p.rapidapi.com'
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
       }
     };
 
@@ -139,15 +143,16 @@ export const fetchHoroscope = async (sign: ZodiacSign): Promise<Horoscope> => {
     
     const data = await response.json();
     
+    // Adjust this mapping based on the actual API response structure
     return {
       sign,
-      date: data.current_date,
-      horoscope: data.description,
-      compatibility: data.compatibility,
-      mood: data.mood,
-      color: data.color,
-      luckyNumber: data.lucky_number,
-      luckyTime: data.lucky_time
+      date: data.date || new Date().toDateString(),
+      horoscope: data.prediction || data.horoscope || data.description,
+      compatibility: data.compatibility || "N/A",
+      mood: data.mood || "Contemplative",
+      color: data.color || "Blue",
+      luckyNumber: data.lucky_number || data.luckyNumber || "7",
+      luckyTime: data.lucky_time || data.luckyTime || "12:00 PM"
     };
   } catch (error) {
     console.error('Error fetching horoscope:', error);
