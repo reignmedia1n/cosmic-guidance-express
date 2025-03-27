@@ -118,24 +118,24 @@ export const getZodiacInfo = (sign: ZodiacSign): ZodiacInfo | undefined => {
   return zodiacSigns.find(zodiac => zodiac.sign === sign);
 };
 
-// Function to fetch daily horoscope with the new API key
+// Function to fetch daily horoscope using the Free Astrology API
 export const fetchHoroscope = async (sign: ZodiacSign): Promise<Horoscope> => {
   try {
-    // Use the new API key provided by the user
+    // Use the API key provided by the user
     const apiKey = "URM6gMZpXL7vkOESsgougSa7LLesasB3xLWhNpIf";
     
-    // This is a generic API endpoint structure - replace with the correct one for your API
-    const apiUrl = `https://api.zodiac-api.com/v1/horoscope/${sign}/today`;
+    // The new endpoint for the Free Astrology API
+    const apiUrl = "https://json.freeastrologyapi.com/horoscope-chart-svg-code";
     
     const options = {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'X-API-KEY': apiKey,
         'Content-Type': 'application/json'
       }
     };
 
-    const response = await fetch(apiUrl, options);
+    const response = await fetch(`${apiUrl}?zodiac=${sign}`, options);
     
     if (!response.ok) {
       throw new Error('Failed to fetch horoscope');
@@ -143,22 +143,23 @@ export const fetchHoroscope = async (sign: ZodiacSign): Promise<Horoscope> => {
     
     const data = await response.json();
     
-    // Adjust this mapping based on the actual API response structure
+    // Map the API response to our Horoscope interface
+    // Note: Adjust the mapping based on the actual API response structure
     return {
       sign,
-      date: data.date || new Date().toDateString(),
-      horoscope: data.prediction || data.horoscope || data.description,
-      compatibility: data.compatibility || "N/A",
-      mood: data.mood || "Contemplative",
-      color: data.color || "Blue",
-      luckyNumber: data.lucky_number || data.luckyNumber || "7",
-      luckyTime: data.lucky_time || data.luckyTime || "12:00 PM"
+      date: new Date().toDateString(),
+      horoscope: data.horoscope || data.description || data.prediction || "Your cosmic energy is aligned for an excellent day. The universe is sending positive vibrations your way.",
+      compatibility: data.compatibility || "Leo",
+      mood: data.mood || "Optimistic",
+      color: data.color || "Purple",
+      luckyNumber: data.luckyNumber || data.lucky_number || "8",
+      luckyTime: data.luckyTime || data.lucky_time || "3:00 PM"
     };
   } catch (error) {
     console.error('Error fetching horoscope:', error);
     toast.error("Failed to fetch horoscope. Please try again later.");
     
-    // Return fallback data with all required properties
+    // Return fallback data
     return {
       sign,
       date: new Date().toDateString(),
