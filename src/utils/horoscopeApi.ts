@@ -118,12 +118,20 @@ export const getZodiacInfo = (sign: ZodiacSign): ZodiacInfo | undefined => {
   return zodiacSigns.find(zodiac => zodiac.sign === sign);
 };
 
-// Function to fetch daily horoscope
+// Function to fetch daily horoscope using a different API
 export const fetchHoroscope = async (sign: ZodiacSign): Promise<Horoscope> => {
   try {
-    const response = await fetch(`https://aztro.sameerkumar.website?sign=${sign}`, {
-      method: 'POST'
-    });
+    // Using Horoscope API from RapidAPI
+    const apiUrl = `https://sameer-kumar-aztro-v1.p.rapidapi.com/?sign=${sign}&day=today`;
+    const options = {
+      method: 'POST',
+      headers: {
+        'X-RapidAPI-Key': 'f458fdbeb7msh91ef95dc53d0e75p1f3affjsn9c05c8c8d8d1',
+        'X-RapidAPI-Host': 'sameer-kumar-aztro-v1.p.rapidapi.com'
+      }
+    };
+
+    const response = await fetch(apiUrl, options);
     
     if (!response.ok) {
       throw new Error('Failed to fetch horoscope');
@@ -142,8 +150,8 @@ export const fetchHoroscope = async (sign: ZodiacSign): Promise<Horoscope> => {
       luckyTime: data.lucky_time
     };
   } catch (error) {
-    toast.error("Failed to fetch horoscope. Please try again later.");
     console.error('Error fetching horoscope:', error);
+    toast.error("Failed to fetch horoscope. Please try again later.");
     
     // Return fallback data with all required properties
     return {
