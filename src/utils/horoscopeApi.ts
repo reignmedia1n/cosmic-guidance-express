@@ -145,11 +145,16 @@ export const fetchHoroscope = async (sign: ZodiacSign): Promise<Horoscope> => {
     toast.error("Failed to fetch horoscope. Please try again later.");
     console.error('Error fetching horoscope:', error);
     
-    // Return fallback data if API fails
+    // Return fallback data with all required properties
     return {
       sign,
       date: new Date().toDateString(),
       horoscope: "We're having trouble connecting to the cosmic forces right now. Please check back later for your daily horoscope.",
+      compatibility: "N/A",
+      mood: "Contemplative",
+      color: "Silver",
+      luckyNumber: "7",
+      luckyTime: "12:00 PM"
     };
   }
 };
